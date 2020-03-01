@@ -1,0 +1,220 @@
+{
+  "openapi": "3.0.1",
+  "info": {
+    "version": "1.0.0",
+    "title": "Step Counter APIs Document",
+    "description": "Company-wide steps leaderboard application for teams of employees which receives, stores and increaments the steps",
+    "contact": {
+      "name": "Shreevidhya",
+      "email": "gshreevidhya@gmail.com"
+    }
+  },
+  "servers": [
+    {
+      "url": "https://stepscounter-api.herokuapp.com/api",
+      "description": "Production Server"
+    },
+    {
+      "url": "http://localhost:8080/api",
+      "description": "Local Server"
+    }
+  ],
+  "paths": {
+    "/teamCounters": {
+      "get": {
+        "description": "Returns the leader board and can be consumed by all the team members.",
+        "responses": {
+          "200": {
+            "description": "Ok",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/teamCounter"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Counters Not found"
+          }
+        }
+      },
+      "post": {
+        "description": "Post a team",
+        "responses": {
+          "201": {
+            "description": "Ok. Team posted successfully"
+          },
+          "422": {
+            "description": "validation Errors"
+          },
+          "409": {
+            "description": "Data conflict - team already present"
+          }
+        },
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/team"
+              },
+              "example": {
+                "team" : "TeamA"
+              }
+            }
+          }
+        }
+      }
+    },
+    "/myCounters/{username}": {
+      "get": {
+        "description": "Returns the user counter.",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "username",
+            "schema":{
+              "type": "string"
+            },
+            "example": "User1",
+            "description": "Name of the user to get the counter",
+            "required": false
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Ok",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/teamCounter"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Member not found"
+          }
+        }
+      },
+      "patch": {
+        "description": "Update user steps",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "username",
+            "schema":{
+              "type": "string"
+            },
+            "example": "User1",
+            "description": "Name of the user to get the counter",
+            "required": false
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Ok. steps updated successfully"
+          },
+          "422": {
+            "description": "validation Errors"
+          },
+          "404": {
+            "description": "Memeber not found"
+          }
+        },
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/steps"
+              },
+              "example": {
+                  "steps": 10
+              }
+            }
+          }
+        }
+      }
+    },
+    "/myCounters": {
+      "post": {
+        "description": "Post a user counter.",
+        "responses": {
+          "201": {
+            "description": "Ok. User Counter posted successfully"
+          },
+          "422": {
+            "description": "validation Errors"
+          },
+          "409": {
+            "description": "Data conflict - user already present or team not present"
+          }
+        },
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/myCounter"
+              },
+              "example": {
+                "name": "User1",
+                "password": "test",
+                "team": "TeamA"
+              }
+            }
+          }
+        }
+      }
+    }
+  },
+  "consumes": "application/json",
+  "produces": "application/json",
+  "components": {
+    "schemas": {
+      "teamCounter": {
+        "type": "array",
+        "items": {
+          "type": "object",
+          "properties": {
+            "stepsCount": {
+              "type": "integer"
+            },
+            "team": {
+              "type": "string"
+            }
+          }
+        }
+      },
+      "team": {
+        "type": "object",
+        "properties": {
+          "team": {
+            "type": "string"
+          }
+        }
+      },
+      "myCounter": {
+        "type": "object",
+        "properties": {
+          "name": {
+            "type": "string"
+          },
+          "password": {
+            "type": "string"
+          },
+          "team": {
+            "type": "string"
+          }
+        }
+      },
+      "steps": {
+        "type": "object",
+        "properties": {
+          "steps": {
+            "type": "integer"
+          }
+        }
+      }
+    }
+  }
+}

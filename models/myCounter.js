@@ -13,6 +13,8 @@ module.exports = class myCounter {
   }
 
   static getMyCounter(name) {
+    console.log(name);
+    console.log(counters);
     return counters.find((counter) => counter.name === name);
   }
 
